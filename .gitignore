@@ -1,0 +1,61 @@
+# ==========================================
+# Datasets & Large Archives (Prevent GitHub 100MB limit errors)
+# ==========================================
+dataset/*.zip
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+
+# Raw dataset files
+dataset/cwru/*.mat
+*.mat
+
+# ==========================================
+# Compiled Executables & Libraries
+# ==========================================
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.obj
+*.lib
+*.a
+
+# ==========================================
+# Python Bytecode & Environments
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ==========================================
+# Sensitive Files & Local Configs
+# ==========================================
+.env
+.env.*
+secrets.json
+*.pem
+*.key
+
+# ==========================================
+# IDE & System Files
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
