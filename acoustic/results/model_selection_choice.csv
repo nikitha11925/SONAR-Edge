@@ -1,0 +1,5 @@
+machine,design,mels,frames,depth,hidden,bottleneck,params,mean_auc
+fan,D_F1_H32_b8,64,1,deep,32,8,6856,0.8907
+pump,T_F1_b8,64,1,tiny,16,8,2408,0.9538
+slider,S_F1_b16,64,1,shallow,32,16,5264,0.9454
+valve,S_F1_b16,64,1,shallow,32,16,5264,0.5712

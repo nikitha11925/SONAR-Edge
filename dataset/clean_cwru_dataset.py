@@ -1,4 +1,9 @@
 """
+WARNING (LEGACY SCRIPT - do not use for results): for 97.mat (healthy) there is no base-accelerometer ('BA')
+channel, and this script FILLS IT WITH RANDOM NOISE (see process_cwru_dataset). It also shuffles overlapping
+frames before the train/validation split. Use dataset/cwru_vibration_v2.py instead, which uses only the real
+channels and a time-ordered split. The cleaning functions below are still imported by that script.
+
 CWRU Bearing Vibration Dataset Cleaning & Feature Extraction Pipeline
 --------------------------------------------------------------------
 This script implements signal conditioning, DC offset removal, Butterworth

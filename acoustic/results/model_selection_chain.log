@@ -1,0 +1,129 @@
+[1/32] ('6', 'fan', 'id_04', 'abnormal') (348, 32, 313) 13s
+[2/32] ('6', 'fan', 'id_02', 'abnormal') (359, 32, 313) 14s
+[3/32] ('6', 'fan', 'id_06', 'abnormal') (361, 32, 313) 14s
+[4/32] ('6', 'fan', 'id_00', 'abnormal') (407, 32, 313) 15s
+[5/32] ('6', 'pump', 'id_00', 'abnormal') (143, 32, 313) 4s
+[6/32] ('6', 'pump', 'id_02', 'abnormal') (111, 32, 313) 3s
+[7/32] ('6', 'pump', 'id_04', 'abnormal') (100, 32, 313) 3s
+[8/32] ('6', 'fan', 'id_02', 'normal') (1016, 32, 313) 31s
+[9/32] ('6', 'fan', 'id_00', 'normal') (1011, 32, 313) 31s
+[10/32] ('6', 'fan', 'id_06', 'normal') (1015, 32, 313) 32s
+[11/32] ('6', 'fan', 'id_04', 'normal') (1033, 32, 313) 32s
+[12/32] ('6', 'pump', 'id_06', 'abnormal') (102, 32, 313) 3s
+[13/32] ('6', 'pump', 'id_04', 'normal') (702, 32, 313) 19s
+[14/32] ('6', 'pump', 'id_00', 'normal') (1006, 32, 313) 27s
+[15/32] ('6', 'slider', 'id_02', 'abnormal') (267, 32, 313) 7s
+[16/32] ('6', 'slider', 'id_00', 'abnormal') (356, 32, 313) 9s
+[17/32] ('6', 'pump', 'id_02', 'normal') (1005, 32, 313) 27s
+[18/32] ('6', 'slider', 'id_06', 'abnormal') (89, 32, 313) 2s
+[19/32] ('6', 'slider', 'id_04', 'abnormal') (178, 32, 313) 5s
+[20/32] ('6', 'valve', 'id_00', 'abnormal') (119, 32, 313) 3s
+[21/32] ('6', 'pump', 'id_06', 'normal') (1036, 32, 313) 28s
+[22/32] ('6', 'valve', 'id_02', 'abnormal') (120, 32, 313) 3s
+[23/32] ('6', 'slider', 'id_04', 'normal') (534, 32, 313) 15s
+[24/32] ('6', 'valve', 'id_04', 'abnormal') (120, 32, 313) 3s
+[25/32] ('6', 'slider', 'id_06', 'normal') (534, 32, 313) 14s
+[26/32] ('6', 'valve', 'id_06', 'abnormal') (120, 32, 313) 3s
+[27/32] ('6', 'slider', 'id_00', 'normal') (1068, 32, 313) 28s
+[28/32] ('6', 'slider', 'id_02', 'normal') (1068, 32, 313) 29s
+[29/32] ('6', 'valve', 'id_02', 'normal') (708, 32, 313) 19s
+[30/32] ('6', 'valve', 'id_00', 'normal') (991, 32, 313) 25s
+[31/32] ('6', 'valve', 'id_04', 'normal') (1000, 32, 313) 25s
+[32/32] ('6', 'valve', 'id_06', 'normal') (992, 32, 313) 24s
+DONE
+[1/32] ('6', 'fan', 'id_04', 'abnormal') (348, 128, 313) 10s
+[2/32] ('6', 'fan', 'id_02', 'abnormal') (359, 128, 313) 10s
+[3/32] ('6', 'fan', 'id_06', 'abnormal') (361, 128, 313) 10s
+[4/32] ('6', 'fan', 'id_00', 'abnormal') (407, 128, 313) 11s
+[5/32] ('6', 'pump', 'id_00', 'abnormal') (143, 128, 313) 3s
+[6/32] ('6', 'pump', 'id_02', 'abnormal') (111, 128, 313) 2s
+[7/32] ('6', 'pump', 'id_04', 'abnormal') (100, 128, 313) 2s
+[8/32] ('6', 'fan', 'id_00', 'normal') (1011, 128, 313) 22s
+[9/32] ('6', 'fan', 'id_02', 'normal') (1016, 128, 313) 23s
+[10/32] ('6', 'fan', 'id_06', 'normal') (1015, 128, 313) 23s
+[11/32] ('6', 'fan', 'id_04', 'normal') (1033, 128, 313) 24s
+[12/32] ('6', 'pump', 'id_06', 'abnormal') (102, 128, 313) 2s
+[13/32] ('6', 'pump', 'id_04', 'normal') (702, 128, 313) 14s
+[14/32] ('6', 'pump', 'id_00', 'normal') (1006, 128, 313) 19s
+[15/32] ('6', 'pump', 'id_02', 'normal') (1005, 128, 313) 19s
+[16/32] ('6', 'slider', 'id_02', 'abnormal') (267, 128, 313) 5s
+[17/32] ('6', 'slider', 'id_00', 'abnormal') (356, 128, 313) 7s
+[18/32] ('6', 'slider', 'id_06', 'abnormal') (89, 128, 313) 2s
+[19/32] ('6', 'slider', 'id_04', 'abnormal') (178, 128, 313) 4s
+[20/32] ('6', 'valve', 'id_00', 'abnormal') (119, 128, 313) 2s
+[21/32] ('6', 'pump', 'id_06', 'normal') (1036, 128, 313) 21s
+[22/32] ('6', 'valve', 'id_02', 'abnormal') (120, 128, 313) 2s
+[23/32] ('6', 'slider', 'id_04', 'normal') (534, 128, 313) 11s
+[24/32] ('6', 'valve', 'id_04', 'abnormal') (120, 128, 313) 2s
+[25/32] ('6', 'slider', 'id_06', 'normal') (534, 128, 313) 11s
+[26/32] ('6', 'valve', 'id_06', 'abnormal') (120, 128, 313) 2s
+[27/32] ('6', 'slider', 'id_00', 'normal') (1068, 128, 313) 20s
+[28/32] ('6', 'slider', 'id_02', 'normal') (1068, 128, 313) 21s
+[29/32] ('6', 'valve', 'id_02', 'normal') (708, 128, 313) 13s
+[30/32] ('6', 'valve', 'id_00', 'normal') (991, 128, 313) 18s
+[31/32] ('6', 'valve', 'id_04', 'normal') (1000, 128, 313) 17s
+[32/32] ('6', 'valve', 'id_06', 'normal') (992, 128, 313) 17s
+DONE
+[tune] 6dB fan frames=1 held-out id_00 done
+[tune] 6dB fan frames=1 held-out id_02 done
+[tune] 6dB fan frames=1 held-out id_04 done
+[tune] 6dB fan frames=1 held-out id_00 done
+[tune] 6dB fan frames=1 held-out id_02 done
+[tune] 6dB fan frames=1 held-out id_04 done
+[tune] 6dB pump frames=1 held-out id_00 done
+[tune] 6dB pump frames=1 held-out id_02 done
+[tune] 6dB pump frames=1 held-out id_04 done
+[tune] 6dB pump frames=1 held-out id_00 done
+[tune] 6dB pump frames=1 held-out id_02 done
+[tune] 6dB pump frames=1 held-out id_04 done
+[tune] 6dB slider frames=1 held-out id_00 done
+[tune] 6dB slider frames=1 held-out id_02 done
+[tune] 6dB slider frames=1 held-out id_04 done
+[tune] 6dB slider frames=1 held-out id_00 done
+[tune] 6dB slider frames=1 held-out id_02 done
+[tune] 6dB slider frames=1 held-out id_04 done
+[tune] 6dB valve frames=1 held-out id_00 done
+[tune] 6dB valve frames=1 held-out id_02 done
+[tune] 6dB valve frames=1 held-out id_04 done
+[tune] 6dB valve frames=1 held-out id_00 done
+[tune] 6dB valve frames=1 held-out id_02 done
+[tune] 6dB valve frames=1 held-out id_04 done
+ALL DONE
+Stage 2: the stage-1 winner of each type with 32 / 64 / 128 mel bands (same rule)
+
+### fan   (structure D_F1_H32_b8; chosen = D_F1_H32_b8)
+| design | mel bands | parameters | mean AUC | false alarms | faults found |
+|---|---|---|---|---|---|
+| D_F1_H32_b8_m32 | 32 | 4,776 | 0.861 | 5% | 48% |
+| D_F1_H32_b8 | 64 | 6,856 | 0.891 | 4% | 54%  <-- chosen |
+| D_F1_H32_b8_m128 | 128 | 11,016 | 0.896 | 5% | 61% |
+
+### pump   (structure T_F1_b8; chosen = T_F1_b8)
+| design | mel bands | parameters | mean AUC | false alarms | faults found |
+|---|---|---|---|---|---|
+| T_F1_b8_m32 | 32 | 1,352 | 0.925 | 33% | 80% |
+| T_F1_b8 | 64 | 2,408 | 0.954 | 32% | 89%  <-- chosen |
+| T_F1_b8_m128 | 128 | 4,520 | 0.971 | 29% | 94% |
+
+### slider   (structure S_F1_b16; chosen = S_F1_b16_m32)
+| design | mel bands | parameters | mean AUC | false alarms | faults found |
+|---|---|---|---|---|---|
+| S_F1_b16_m32 | 32 | 3,184 | 0.938 | 6% | 67%  <-- chosen |
+| S_F1_b16 | 64 | 5,264 | 0.945 | 3% | 63% |
+| S_F1_b16_m128 | 128 | 9,424 | 0.954 | 2% | 62% |
+
+### valve   (structure S_F1_b16; chosen = S_F1_b16)
+| design | mel bands | parameters | mean AUC | false alarms | faults found |
+|---|---|---|---|---|---|
+| S_F1_b16_m32 | 32 | 3,184 | 0.540 | 3% | 2% |
+| S_F1_b16 | 64 | 5,264 | 0.571 | 3% | 2%  <-- chosen |
+| S_F1_b16_m128 | 128 | 9,424 | 0.573 | 2% | 1% |
+[final] 6dB fan frames=5 held-out id_06 done
+[final] 6dB fan frames=1 held-out id_06 done
+[final] 6dB pump frames=5 held-out id_06 done
+[final] 6dB pump frames=1 held-out id_06 done
+[final] 6dB slider frames=5 held-out id_06 done
+[final] 6dB slider frames=1 held-out id_06 done
+[final] 6dB valve frames=5 held-out id_06 done
+[final] 6dB valve frames=1 held-out id_06 done
+ALL DONE
