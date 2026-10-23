@@ -76,14 +76,17 @@ class Engine:
 
 
 class App:
-    def __init__(self, root):
+    def __init__(self, root, parent=None):
         self.root = root
         self.engine = Engine()
-        root.title('Machine Health Monitor  -  simulation (recorded clips, laptop)')
-        root.geometry('1180x760')
-        left = ttk.Frame(root, padding=10)
+        standalone = parent is None
+        parent = parent if parent is not None else root
+        if standalone:
+            root.title('Machine Health Monitor  -  simulation (recorded clips, laptop)')
+            root.geometry('1180x760')
+        left = ttk.Frame(parent, padding=10)
         left.pack(side='left', fill='y')
-        right = ttk.Frame(root, padding=10)
+        right = ttk.Frame(parent, padding=10)
         right.pack(side='right', fill='both', expand=True)
 
         ttk.Label(left, text='1. Choose the machine', font=('Segoe UI', 11, 'bold')).pack(anchor='w')
