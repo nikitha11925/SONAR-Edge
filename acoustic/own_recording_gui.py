@@ -21,6 +21,8 @@ import features as F
 import model_selection as M
 import demo as D
 import own_recording_test as T
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'firmware', 'tools'))
 
 GREEN, RED = '#2e8b57', '#c0392b'
 AUDIO = [('Audio', '*.wav *.mp3 *.m4a *.mpeg *.flac *.ogg *.aac'), ('all files', '*.*')]
@@ -109,6 +111,18 @@ class OwnTab:
         self.b_play = ttk.Button(bar, text='Play this clip', command=self.on_play, state='disabled')
         for b in (self.b_choose, self.b_h, self.b_f, self.b_play):
             b.pack(side='left', padx=3)
+        # ESP32-S3 board: the board does the scoring, the laptop only shows the result
+        self.board, self.board_alert, self.board_busy = None, None, False
+        bbar = ttk.Frame(t_clip, padding=(6, 0))
+        bbar.pack(fill='x')
+        self.use_board = tk.BooleanVar(value=False)
+        ttk.Checkbutton(bbar, text='Judge on the ESP32-S3 board, port', variable=self.use_board).pack(side='left')
+        self.port_var = tk.StringVar(value='COM7')
+        ttk.Entry(bbar, textvariable=self.port_var, width=7).pack(side='left', padx=3)
+        self.b_board = ttk.Button(bbar, text='Calibrate the board', command=self.on_board_cal, state='disabled')
+        self.b_board.pack(side='left', padx=3)
+        self.board_status = tk.StringVar(value='Board not calibrated (calibrate on the laptop first).')
+        ttk.Label(bbar, textvariable=self.board_status, foreground='#444').pack(side='left', padx=6)
         self.drop = tk.Label(t_clip, text='DROP an audio file here (WAV, MP3, M4A) to judge it\n(calibrate first; only the first 10 s of the file are judged)',
                              bg='#eef3fb', fg='#244', relief='groove', bd=2, height=3)
         self.drop.pack(fill='x', padx=6, pady=(2, 4))
@@ -242,6 +256,7 @@ class OwnTab:
 
         have_clips = bool(self.faulty_files)
         self.b_choose.config(state='normal')
+        self.b_board.config(state='normal' if len(hc) >= 2 * self.k else 'disabled')
         self.b_h.config(state='normal' if self.healthy_test_files else 'disabled')
         self.b_f.config(state='normal' if have_clips else 'disabled')
         hint = '' if (self.healthy_test_files and have_clips) else \
@@ -280,6 +295,58 @@ class OwnTab:
         if files:
             self.judge(random.choice(files))
 
+    # ---- ESP32-S3 board
+    @staticmethod
+    def to_int16(clip):
+        return np.round(np.clip(clip, -1, 32767 / 32768) * 32768).astype('<i2')
+
+    def on_board_cal(self):
+        """Send the calibration clips to the board (same clips as the laptop calibration)."""
+        if self.board_busy:
+            return
+        hc = clip_files(self.paths.get('healthy'))
+        if len(hc) < 2 * self.k:
+            messagebox.showinfo('Board', 'The board needs a folder of healthy 10-second clips for calibration.')
+            return
+        self.board_busy = True
+        self.b_board.config(state='disabled')
+        port, k = self.port_var.get().strip(), self.k
+
+        def say(msg):
+            self.root.after(0, lambda: self.board_status.set(msg))
+
+        def work():
+            try:
+                import stream_test as ST     # firmware/tools/stream_test.py (needs pyserial)
+                if self.board is not None:
+                    try:
+                        self.board.s.close()
+                    except Exception:  # noqa
+                        pass
+                b = ST.Board(port)
+                b.open()
+                info = b.restart()
+                if info[0] != self.ctx['mels']:
+                    raise ValueError(f'board uses {info[0]} mel bands, laptop model {self.ctx["mels"]}')
+                for i, f in enumerate(hc[:k]):
+                    say(f'Calibrating the board: feature numbers, clip {i + 1}/{k}...')
+                    b.cal_add(ST.frames_of(ST.read_int16(f)))
+                b.cal_done()
+                sc = []
+                for i, f in enumerate(hc[k:2 * k]):
+                    say(f'Calibrating the board: alert level, clip {i + 1}/{k}...')
+                    sc.append(b.scores(ST.frames_of(ST.read_int16(f)))[0].mean())
+                self.board, self.board_alert = b, M.tau(np.array(sc))
+                say(f'Board calibrated on {port}. Alert level {self.board_alert:.3f}. Tick the box to judge on the board.')
+                self.root.after(0, lambda: self.use_board.set(True))
+            except BaseException as e:  # noqa  (stream_test uses sys.exit for board errors)
+                self.board = None
+                say(f'Board problem: {e}. Check the cable (USB port) and press RST.')
+            finally:
+                self.board_busy = False
+                self.root.after(0, lambda: self.b_board.config(state='normal'))
+        threading.Thread(target=work, daemon=True).start()
+
     def judge(self, path):
         try:
             y, sr = T.read_audio(path)
@@ -288,15 +355,43 @@ class OwnTab:
                 raise ValueError('This file is shorter than 10 seconds.')
             clip = clips[0]
             lm = F.logmel(clip, n_mels=self.ctx['mels'])
-            s = float(M.file_scores(self.ctx['model'], M.stack([lm], self.ctx['frames']), self.ctx['mu'], self.ctx['sd'])[0])
         except Exception as e:  # noqa
             messagebox.showerror('Problem', f'Could not judge this file: {e}')
             return
+        if self.use_board.get():
+            if self.board is None:
+                messagebox.showinfo('Board', 'Press "Calibrate the board" first, or untick the board box.')
+                return
+            if self.board_busy:
+                return
+            self.board_busy = True
+            self.verdict.config(text='board is\njudging...', bg='#dddddd', fg='black')
+
+            def work():
+                try:
+                    import stream_test as ST
+                    self.board.led(0)                                      # LED off while judging
+                    sc, us = self.board.scores(ST.frames_of(self.to_int16(clip)))
+                    s, ms = float(sc.mean()), float(np.median(us)) / 1000
+                    self.board.led(2 if s > self.board_alert else 1)      # board LED: red = fault, green = healthy
+                    self.root.after(0, lambda: self.show_verdict(path, clips, lm, s, self.board_alert,
+                                                                 f'Judged ON THE ESP32-S3 BOARD ({ms:.1f} ms per 32 ms frame)'))
+                except BaseException as e:  # noqa
+                    msg = str(e)
+                    self.root.after(0, lambda: messagebox.showerror('Board', f'The board did not answer: {msg}\n'
+                                                                    'Press RST on the board, then "Calibrate the board" again.'))
+                finally:
+                    self.board_busy = False
+            threading.Thread(target=work, daemon=True).start()
+            return
+        s = float(M.file_scores(self.ctx['model'], M.stack([lm], self.ctx['frames']), self.ctx['mu'], self.ctx['sd'])[0])
+        self.show_verdict(path, clips, lm, s, self.ctx['alert'], 'Judged on the laptop')
+
+    def show_verdict(self, path, clips, lm, s, alert, where):
         self.last_path = path
-        alert = self.ctx['alert']
         red = s > alert
         self.verdict.config(text='RED\nALERT' if red else 'GREEN\nNORMAL', bg=RED if red else GREEN, fg='white')
-        notes = [f'{os.path.basename(path)}', f'Score {s:.3f}  vs alert level {alert:.3f}']
+        notes = [f'{os.path.basename(path)}', where, f'Score {s:.3f}  vs alert level {alert:.3f}']
         if len(clips) > 1:
             notes.append(f'(file is longer than 10 s; only the first 10 s were judged)')
         folder = os.path.basename(os.path.dirname(path))

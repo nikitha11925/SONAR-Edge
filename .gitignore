@@ -59,3 +59,33 @@ secrets.json
 .DS_Store
 Thumbs.db
 desktop.ini
+.metadata/
+
+# ==========================================
+# Presentations, proposals, papers (kept locally, not in git)
+# ==========================================
+ppts/
+*.ppt
+*.pptx
+*.doc
+*.docx
+*.pdf
+~$*
+
+# ==========================================
+# ESP-IDF / firmware build output (rebuilt by "idf.py build")
+# ==========================================
+build/
+managed_components/
+sdkconfig.old
+eim_config.toml
+
+# ==========================================
+# Recordings and generated outputs
+# ==========================================
+own_data/
+*.wav
+*.mp3
+*.m4a
+acoustic/demo_output/
+*.log

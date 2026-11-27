@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Evidence Document</title>
+<style>
+  :root {
+    --text: #1d1f23; --muted: #5a606b; --line: #d9dde3; --head: #0f2b46; --accent: #1f6fb2;
+    --code-bg: #1e1e1e; --code-text: #e6e6e6; --ok: #1d7a46; --soft: #f4f6f9;
+  }
+  @page { size: A4; margin: 16mm 15mm 16mm 15mm; }
+  * { box-sizing: border-box; }
+  html, body { background: #ffffff; }
+  body { margin: 0 auto; max-width: 880px; padding: 28px 16px 60px; color: var(--text);
+         font-family: "Segoe UI", Calibri, Arial, sans-serif; font-size: 13.5px; line-height: 1.6; }
+  h1 { font-size: 26px; font-weight: 800; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+  h2 { font-size: 19px; font-weight: 800; color: var(--head); margin: 38px 0 10px; padding-bottom: 6px;
+       border-bottom: 2px solid var(--head); break-after: avoid; }
+  h3 { font-size: 15px; font-weight: 700; color: var(--head); margin: 22px 0 6px; break-after: avoid; }
+  p { margin: 8px 0; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 2px; }
+  .cover { border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; margin-bottom: 10px; }
+  .cover table { margin-top: 12px; }
+  .note { background: var(--soft); border-left: 4px solid var(--accent); padding: 10px 14px; margin: 12px 0; border-radius: 4px; }
+  .ok { color: var(--ok); font-weight: 700; }
+  pre { background: var(--code-bg); color: var(--code-text); border-radius: 8px; padding: 14px 16px; margin: 10px 0 14px;
+        font-family: Consolas, "Cascadia Mono", "Courier New", monospace; font-size: 11.8px; line-height: 1.5;
+        white-space: pre-wrap; word-break: break-word; break-inside: avoid; }
+  pre .c { color: #6a9955; } pre .k { color: #569cd6; } pre .s { color: #ce9178; } pre .n { color: #b5cea8; }
+  .file { display: inline-block; font-family: Consolas, monospace; font-size: 11.5px; background: #2b2b2b; color: #f0f0f0;
+          border-radius: 6px 6px 0 0; padding: 3px 10px; margin: 10px 0 -10px; }
+  code { font-family: Consolas, monospace; font-size: 12.3px; background: #eef1f5; padding: 1px 5px; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 14px; font-size: 12.8px; break-inside: avoid; }
+  th, td { border: 1px solid var(--line); padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #eef2f7; font-weight: 700; color: var(--head); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .formula { font-family: "Cambria Math", Cambria, serif; font-size: 15px; background: var(--soft); border: 1px solid var(--line);
+             border-radius: 6px; padding: 8px 14px; margin: 8px 0; }
+  .toc ol { margin: 6px 0 0 18px; padding: 0; columns: 2; column-gap: 30px; }
+  .toc li { margin: 2px 0; }
+  ul { margin: 6px 0 6px 20px; padding: 0; }
+  li { margin: 3px 0; }
+  .page-break { break-before: page; }
+  @media (max-width: 640px) { .toc ol { columns: 1; } body { font-size: 14px; } pre { font-size: 11px; } }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>Self-Calibrating Multi-Modal Edge AI Node for Industrial Machine Anomaly Detection</h1>
+  <p class="sub"><b>Project evidence document: scripts, formulas, data files, model files and how every result was re-checked</b></p>
+  <p class="sub">Major Project, Team 163, Department of CSE, Dayananda Sagar University. Guide: Dr. Meenakshi Malhotra</p>
+  <table>
+    <tr><th>Team</th><td>Nikitha D (ENG23CS0384), Rajika Saha (ENG23CS0415), Monalisa (ENG23CS0368), Sunand P Chowdary (ENG23CS0387)</td></tr>
+    <tr><th>Project folder</th><td><code>c:\dev\capstone</code> (code) and the external SSD <code>N:\dev</code> (raw MIMII audio and extracted features)</td></tr>
+    <tr><th>Checks re-run</th><td>27 November 2026, on the demo laptop. All checks are read-only: nothing was retrained or changed.</td></tr>
+  </table>
+  <div class="note"><b>How to read this document.</b> Every code block is copied from a file in the project, and the file name is shown above it. Every number comes from a results file or from a check that was re-run on 27 November 2026. Section 12 lists one command for each check, so anyone can repeat it on the demo laptop.</div>
+</div>
+
+<div class="toc">
+  <h3>Contents</h3>
+  <ol>
+    <li>Project directory used for the demo</li>
+    <li>Libraries and versions</li>
+    <li>Data used</li>
+    <li>Feature extraction: formulas, script and CSV files</li>
+    <li>The model: script and saved model files</li>
+    <li>Training</li>
+    <li>Scoring and two-stage calibration</li>
+    <li>Evaluation protocol, metrics and results</li>
+    <li>Baseline reproduction (pipeline check)</li>
+    <li>Calibration ablation</li>
+    <li>Running on the ESP32-S3</li>
+    <li>How every result was re-checked</li>
+    <li>Known limitations (reported, not hidden)</li>
+  </ol>
+</div>
+
+<!-- ============================================================ 1 -->
+<h2>1. Project Directory Used for the Demo</h2>
+<p>Only the folders needed to understand and run the project are shown. Python caches and build outputs are left out.</p>
+<pre>c:\dev\capstone
+├── acoustic\                       <span class="c"># all Python work: features, model, evaluation, dashboard</span>
+│   ├── features.py                 <span class="c"># log-mel feature extraction (librosa)</span>
+│   ├── extract_features.py         <span class="c"># extracts features for all 54,057 MIMII files</span>
+│   ├── export_csv.py               <span class="c"># writes one clip's features to CSV (for inspection)</span>
+│   ├── baseline_ae.py              <span class="c"># re-implementation of Hitachi's MIMII baseline</span>
+│   ├── run_baseline.py             <span class="c"># runs the baseline on all 48 cases</span>
+│   ├── compare_hitachi.py          <span class="c"># compares our baseline with Hitachi's published table</span>
+│   ├── calibration_v2.py           <span class="c"># calibration study</span>
+│   ├── ablation_calibration.py     <span class="c"># none / alert-level-only / full calibration</span>
+│   ├── noise_mismatch.py           <span class="c"># calibrate at one noise level, test at another</span>
+│   ├── model_selection.py          <span class="c"># 12 model designs, sealed machine 06; build/train/score code</span>
+│   ├── final_evaluation.py         <span class="c"># the 144 final runs, all metrics</span>
+│   ├── evaluation_lib.py           <span class="c"># shared metric formulas (used by scripts and dashboard)</span>
+│   ├── dashboard_gui.py            <span class="c"># 5-tab demo dashboard</span>
+│   ├── demo.py, demo_gui.py        <span class="c"># live-clip demo (tab 1)</span>
+│   ├── own_recording_gui.py        <span class="c"># tab 5: own recordings + ESP32-S3 board</span>
+│   ├── own_recording_test.py       <span class="c"># same logic as tab 5, command line</span>
+│   ├── split_recordings.py         <span class="c"># cuts long phone recordings into 10 s clips</span>
+│   ├── alert_compare_gui.py        <span class="c"># compares alert-level rules (mean+3std, median+MAD)</span>
+│   ├── csv_samples\                <span class="c"># feature CSV files of one MIMII clip</span>
+│   ├── demo_models\                <span class="c"># saved trained models (.pt, PyTorch)</span>
+│   ├── results\                    <span class="c"># every results CSV, log and summary</span>
+│   └── plots\                      <span class="c"># figures used in the report</span>
+├── firmware\                       <span class="c"># code that runs on the ESP32-S3</span>
+│   ├── common\ae_pipeline.c / .h   <span class="c"># FFT, log-mel, autoencoder, calibration in plain C</span>
+│   ├── common\model_data.c / .h    <span class="c"># model weights + mel table, generated from the .pt file</span>
+│   ├── esp32\main\main.c           <span class="c"># memory and speed test program</span>
+│   ├── esp32_stream\main\main.c    <span class="c"># demo program: receives sound over USB, scores it, drives the LED</span>
+│   ├── tools\export_firmware.py    <span class="c"># .pt model -> C tables</span>
+│   ├── tools\check_against_python.py <span class="c"># C features vs librosa</span>
+│   ├── tools\stream_test.py        <span class="c"># board vs Python on real clips</span>
+│   └── results\board_stream_test.csv
+├── dataset\
+│   ├── cwru\                       <span class="c"># CWRU bearing vibration data (.mat)</span>
+│   ├── cwru_vibration_v2.py        <span class="c"># vibration experiments (CNN vs autoencoder, sensor noise)</span>
+│   ├── inventory_mimii.py          <span class="c"># counts and checks every MIMII file</span>
+│   ├── mimii_inventory.csv         <span class="c"># 54,057 rows, one per MIMII file</span>
+│   └── mimii_zips\                 <span class="c"># original MIMII downloads (12 zip files)</span>
+├── own_data\clips\                 <span class="c"># own fan recordings, 10 s clips</span>
+│   ├── healthy_session1\  (69)    healthy_session2\  (18)    faulty\  (18)
+├── docs\                           <span class="c"># project guide, code walkthrough, literature survey</span>
+└── ppts\                           <span class="c"># review decks, KSCST proposal, diagrams</span>
+
+N:\dev\Sonar-acoustic-dataset\      <span class="c"># MIMII audio (unzipped WAV files)</span>
+N:\dev\mimii_features\              <span class="c"># extracted log-mel features (.npy), one file per machine/noise/label</span></pre>
+
+<h3>Saved model files (<code>acoustic\demo_models</code>)</h3>
+<p>The trained models are saved as PyTorch <code>.pt</code> files (the PyTorch equivalent of a <code>.pkl</code> file). Each holds the weights and biases of one autoencoder. The name gives the machine type, the held-out machine and the noise level.</p>
+<table>
+  <tr><th>File</th><th class="num">Size (bytes)</th><th>Model</th></tr>
+  <tr><td><code>fan_id_06_6dB.pt</code></td><td class="num">32,107</td><td>Fan, trained on fans 00/02/04; <b>this is the model on the ESP32-S3</b></td></tr>
+  <tr><td><code>fan_id_00_6dB.pt</code>, <code>fan_id_02_6dB.pt</code>, <code>fan_id_04_6dB.pt</code></td><td class="num">32,107 each</td><td>Fan, other held-out machines</td></tr>
+  <tr><td><code>fan_id_06_-6dB.pt</code></td><td class="num">32,125</td><td>Fan, trained at the noisiest level</td></tr>
+  <tr><td><code>pump_id_00_6dB.pt</code>, <code>pump_id_06_6dB.pt</code></td><td class="num">13,231 each</td><td>Pump</td></tr>
+  <tr><td><code>slider_id_06_6dB.pt</code></td><td class="num">16,395</td><td>Slide rail</td></tr>
+  <tr><td><code>valve_id_06_6dB.pt</code></td><td class="num">24,701</td><td>Valve</td></tr>
+</table>
+
+<!-- ============================================================ 2 -->
+<h2>2. Libraries and Versions</h2>
+<p>These versions were printed on the demo laptop on 27 November 2026.</p>
+<table>
+  <tr><th>Library</th><th>Version</th><th>Used for</th></tr>
+  <tr><td>Python</td><td>3.13.7</td><td>All offline work</td></tr>
+  <tr><td>PyTorch</td><td>2.12.1 (CPU)</td><td>Building and training the autoencoders; saving <code>.pt</code> files</td></tr>
+  <tr><td>librosa</td><td>1.0.0</td><td>Mel spectrogram and mel filter table</td></tr>
+  <tr><td>NumPy</td><td>2.3.5</td><td>Arrays, standardisation, statistics, the by-hand FFT check</td></tr>
+  <tr><td>scikit-learn</td><td>1.7.2</td><td><code>roc_auc_score</code> and <code>roc_curve</code></td></tr>
+  <tr><td>soundfile</td><td>0.14.0</td><td>Reading WAV files</td></tr>
+  <tr><td>matplotlib, Tkinter</td><td>(standard)</td><td>Plots and the dashboard</td></tr>
+  <tr><td>pyserial</td><td>(standard)</td><td>Laptop ↔ ESP32-S3 USB link</td></tr>
+  <tr><td>ESP-IDF</td><td>v6.1.1</td><td>Building and flashing the ESP32-S3 firmware (plain C)</td></tr>
+  <tr><td>espressif/led_strip</td><td>^3</td><td>Driving the board's RGB LED (GPIO 48)</td></tr>
+</table>
+
+<!-- ============================================================ 3 -->
+<h2>3. Data Used</h2>
+<table>
+  <tr><th>Data</th><th>What it contains</th><th>Proof in the project</th></tr>
+  <tr><td><b>MIMII</b> (Hitachi, public)</td><td>Fans, pumps, slide rails and valves; 4 machines each (IDs 00, 02, 04, 06); 3 noise levels (6, 0, −6 dB); 16 kHz, 8-channel WAV, 10 s clips. 26,092 normal and 6,065 abnormal recordings per noise set.</td><td><code>dataset\mimii_inventory.csv</code>: <b>54,057 rows</b>, one per WAV file; <code>acoustic\results\extract.log</code>: every folder extracted, e.g. <code>(1000, 64, 313)</code></td></tr>
+  <tr><td><b>CWRU</b> (public)</td><td>Motor bearing vibration, healthy and faulty</td><td><code>dataset\cwru\*.mat</code>, <code>dataset\cwru_vibration_v2_results.csv</code></td></tr>
+  <tr><td><b>Own fan</b></td><td>Recorded with a phone, cut into 10 s clips</td><td><code>own_data\clips</code>: 69 + 18 healthy, 18 faulty</td></tr>
+</table>
+<p>Only the <b>first channel</b> of the 8-channel MIMII audio is used (like a single microphone on the device).</p>
+
+<!-- ============================================================ 4 -->
+<h2 class="page-break">4. Feature Extraction: Formulas, Script and CSV Files</h2>
+
+<h3>Formulas</h3>
+<p>For each 1024-sample window (64 ms), moved by 512 samples (32 ms):</p>
+<div class="formula">1. Hann window: &nbsp; w[n] = 0.5 − 0.5·cos(2πn / 1024), &nbsp; n = 0 … 1023</div>
+<div class="formula">2. FFT and power: &nbsp; P[k] = | Σ<sub>n</sub> x[n]·w[n]·e<sup>−j2πkn/1024</sup> |² , &nbsp; k = 0 … 512 &nbsp; (power = 2)</div>
+<div class="formula">3. Mel bands: &nbsp; M[b] = Σ<sub>k</sub> H<sub>b</sub>[k]·P[k], &nbsp; b = 1 … 64 &nbsp; (H = librosa's triangular mel filters)</div>
+<div class="formula">4. Log: &nbsp; L[b] = (20 / power)·log<sub>10</sub>(M[b] + ε) = 10·log<sub>10</sub>(M[b] + ε), &nbsp; ε = 2.22 × 10<sup>−16</sup></div>
+<p>A 10 s clip at 16 kHz gives <b>313 frames × 64 bands</b>. These settings are copied from Hitachi's MIMII baseline so the results can be compared.</p>
+
+<span class="file">acoustic\features.py</span>
+<pre>N_MELS = <span class="n">64</span>
+N_FFT = <span class="n">1024</span>
+HOP = <span class="n">512</span>
+POWER = <span class="n">2.0</span>
+
+<span class="k">def</span> load_channel0(path):
+    y, sr = sf.read(path, dtype=<span class="s">'float32'</span>, always_2d=<span class="k">True</span>)
+    <span class="k">assert</span> sr == <span class="n">16000</span>, sr
+    <span class="k">return</span> y[:, <span class="n">0</span>]
+
+<span class="k">def</span> logmel(y, n_mels=N_MELS):
+    mel = librosa.feature.melspectrogram(y=y, sr=<span class="n">16000</span>, n_fft=N_FFT, hop_length=HOP,
+                                         n_mels=n_mels, power=POWER)
+    <span class="k">return</span> (<span class="n">20.0</span> / POWER * np.log10(mel + sys.float_info.epsilon)).astype(np.float32)</pre>
+
+<span class="file">acoustic\extract_features.py (core)</span>
+<pre>files = F.list_wavs(snr, mtype, mid, label)
+arr = np.stack([F.logmel(F.load_channel0(p)) <span class="k">for</span> p <span class="k">in</span> files])     <span class="c"># (n_files, 64, 313)</span>
+np.save(tmp, arr)
+os.replace(tmp, out)                                                   <span class="c"># one .npy per machine / noise / label</span></pre>
+
+<h3>Feature CSV files</h3>
+<p><code>acoustic\export_csv.py</code> writes the features of one clip to CSV so they can be opened in Excel. Two files are in <code>acoustic\csv_samples</code>:</p>
+<table>
+  <tr><th>File</th><th>Shape</th><th>Meaning</th></tr>
+  <tr><td><code>6dB_fan_id_00_normal_00000000_logmel.csv</code></td><td>64 rows × 313 columns</td><td>The log-mel spectrogram: rows = mel bands, columns = 32 ms frames</td></tr>
+  <tr><td><code>6dB_fan_id_00_normal_00000000_model_inputs.csv</code></td><td>309 rows × 320 columns</td><td>Baseline-style inputs (5 stacked frames × 64 bands). Our final models use 1 frame = 64 values</td></tr>
+</table>
+<span class="file">acoustic\csv_samples\6dB_fan_id_00_normal_00000000_logmel.csv (first rows, first columns)</span>
+<pre>frame_0,frame_1,frame_2,frame_3,frame_4,frame_5,frame_6,frame_7, ...
+-18.964,-17.926,-17.758,-13.270,-12.321,-18.269,-14.479,-17.236, ...   <span class="c"># mel band 1</span>
+-19.143,-18.082,-19.730,-14.689,-14.202,-18.435,-15.535,-18.872, ...   <span class="c"># mel band 2</span></pre>
+
+<h3>How the features were re-checked</h3>
+<table>
+  <tr><th>Check</th><th>Result (27 Nov 2026)</th></tr>
+  <tr><td>Recompute the CSV spectrogram from the original WAV file</td><td>Shape (64, 313) matches; max difference <b>0.0005</b>, which is the CSV's rounding to 3 decimals <span class="ok">✓</span></td></tr>
+  <tr><td>Compute frame 100 <b>by hand</b> (NumPy FFT + Hann + mel table + log, without librosa's feature function)</td><td>Max difference from librosa <b>3.8 × 10<sup>−6</sup></b> <span class="ok">✓</span></td></tr>
+  <tr><td>C feature code on the chip vs Python (the whole chain: features + model, on real clips)</td><td>Board and Python scores agree to 2.7 × 10<sup>−5</sup> per frame (section 11) <span class="ok">✓</span></td></tr>
+</table>
+
+<!-- ============================================================ 5 -->
+<h2 class="page-break">5. The Model: Script and Saved Model Files</h2>
+<p>A fully connected (dense) <b>autoencoder</b>: it compresses the 64 input values into a small bottleneck and rebuilds them. It's trained on healthy sound only, so unusual (faulty) sound is rebuilt badly.</p>
+
+<span class="file">acoustic\model_selection.py: build()</span>
+<pre><span class="k">def</span> build(in_dim, depth, hidden, bott):
+    <span class="k">if</span> depth == <span class="s">'deep'</span>:
+        sizes = [in_dim, hidden, hidden, bott, hidden, hidden, in_dim]     <span class="c"># fan: 64-32-32-8-32-32-64</span>
+    <span class="k">elif</span> depth == <span class="s">'shallow'</span>:
+        sizes = [in_dim, <span class="n">32</span>, bott, <span class="n">32</span>, in_dim]                          <span class="c"># slider, valve</span>
+    <span class="k">else</span>:
+        sizes = [in_dim, <span class="n">16</span>, bott, <span class="n">16</span>, in_dim]                          <span class="c"># pump ('tiny')</span>
+    layers = []
+    <span class="k">for</span> i <span class="k">in</span> range(len(sizes) - <span class="n">1</span>):
+        lin = nn.Linear(sizes[i], sizes[i + <span class="n">1</span>])
+        nn.init.xavier_uniform_(lin.weight)
+        nn.init.zeros_(lin.bias)
+        layers.append(lin)
+        <span class="k">if</span> i &lt; len(sizes) - <span class="n">2</span>:
+            layers.append(nn.ReLU())                                       <span class="c"># ReLU on hidden layers, linear output</span>
+    <span class="k">return</span> nn.Sequential(*layers)</pre>
+
+<h3>Chosen model per machine type</h3>
+<p>From <code>acoustic\results\model_selection_choice_final.csv</code>. Rule: <b>the smallest of 12 designs whose mean AUC is within 0.02 of the best</b>, chosen on machines 00, 02 and 04 only. Machine 06 was sealed.</p>
+<span class="file">acoustic\results\model_selection_choice_final.csv</span>
+<pre>machine,design,mels,frames,depth,hidden,bottleneck,params,mean_auc
+fan,D_F1_H32_b8,64,1,deep,32,8,6856,0.8907
+pump,T_F1_b8,64,1,tiny,16,8,2408,0.9538
+slider,S_F1_b16,32,1,shallow,32,16,3184,0.9377
+valve,S_F1_b16,64,1,shallow,32,16,5264,0.5712</pre>
+
+<h3>Contents of the saved file <code>fan_id_06_6dB.pt</code> (loaded on 27 Nov 2026)</h3>
+<table>
+  <tr><th>Tensor</th><th>Shape</th><th>Tensor</th><th>Shape</th></tr>
+  <tr><td>0.weight</td><td>(32, 64)</td><td>0.bias</td><td>(32)</td></tr>
+  <tr><td>2.weight</td><td>(32, 32)</td><td>2.bias</td><td>(32)</td></tr>
+  <tr><td>4.weight</td><td>(8, 32)</td><td>4.bias</td><td>(8)</td></tr>
+  <tr><td>6.weight</td><td>(32, 8)</td><td>6.bias</td><td>(32)</td></tr>
+  <tr><td>8.weight</td><td>(32, 32)</td><td>8.bias</td><td>(32)</td></tr>
+  <tr><td>10.weight</td><td>(64, 32)</td><td>10.bias</td><td>(64)</td></tr>
+</table>
+<div class="formula">Weights 64·32 + 32·32 + 32·8 + 8·32 + 32·32 + 32·64 = 6,656 &nbsp;+&nbsp; biases 200 &nbsp;=&nbsp; <b>6,856 parameters</b> &nbsp;(≈ 26.8 KB as 32-bit floats)</div>
+<p>The file loads correctly and contains exactly <b>6,856</b> parameters <span class="ok">✓</span>. For comparison, Hitachi's baseline (320-64-64-8-64-64-320) has 50,760.</p>
+
+<!-- ============================================================ 6 -->
+<h2>6. Training</h2>
+<span class="file">acoustic\model_selection.py: train()</span>
+<pre><span class="k">def</span> train(model, X, epochs, seed, batch=<span class="n">512</span>):
+    torch.manual_seed(seed)
+    rng = np.random.default_rng(seed)
+    n_val = int(<span class="n">0.1</span> * len(X))
+    Xtr = torch.from_numpy(X[:len(X) - n_val])
+    opt = torch.optim.Adam(model.parameters(), lr=<span class="n">1e-3</span>)
+    loss_fn = nn.MSELoss()
+    <span class="k">for</span> _ <span class="k">in</span> range(epochs):
+        model.train()
+        perm = torch.from_numpy(rng.permutation(len(Xtr)))
+        <span class="k">for</span> i <span class="k">in</span> range(<span class="n">0</span>, len(Xtr), batch):
+            xb = Xtr[perm[i:i + batch]]
+            opt.zero_grad()
+            loss_fn(model(xb), xb).backward()        <span class="c"># input = target (autoencoder)</span>
+            opt.step()
+    <span class="k">return</span> model</pre>
+<table>
+  <tr><th>Setting</th><th>Value</th></tr>
+  <tr><td>Optimiser / learning rate</td><td>Adam / 0.001</td></tr>
+  <tr><td>Batch size / epochs</td><td>512 / 30 (the baseline uses 50)</td></tr>
+  <tr><td>Loss</td><td>Mean squared error between input and rebuilt input</td></tr>
+  <tr><td>Training data</td><td>Healthy clips of the <b>other 3 machines</b> of that type, each standardised with its own statistics. Every 4th frame is used (<code>TRAIN_STRIDE = 4</code>), because neighbouring frames overlap 50%</td></tr>
+  <tr><td>Seeds</td><td>0, 1, 2 (three separate trainings)</td></tr>
+</table>
+
+<!-- ============================================================ 7 -->
+<h2 class="page-break">7. Scoring and Two-Stage Calibration</h2>
+<h3>Formulas</h3>
+<div class="formula">Standardise (calibration step 1): &nbsp; z<sub>b</sub> = (L<sub>b</sub> − μ<sub>b</sub>) / (σ<sub>b</sub> + 10<sup>−6</sup>), &nbsp; μ, σ from the new machine's first 30 healthy clips</div>
+<div class="formula">Frame error: &nbsp; e = (1/64)·Σ<sub>b</sub> (ẑ<sub>b</sub> − z<sub>b</sub>)² &nbsp;&nbsp;&nbsp; Clip score: &nbsp; s = mean of e over all frames of the 10 s clip</div>
+<div class="formula">Alert level (calibration step 2): &nbsp; τ = mean(s) + 3·std(s) over the next 30 healthy clips &nbsp;&nbsp;→&nbsp; RED if s &gt; τ</div>
+
+<span class="file">acoustic\model_selection.py: stats(), file_scores(), tau()</span>
+<pre><span class="k">def</span> stats(vecs):
+    X = vecs.reshape(-<span class="n">1</span>, vecs.shape[-<span class="n">1</span>])
+    <span class="k">return</span> X.mean(<span class="n">0</span>), X.std(<span class="n">0</span>) + <span class="n">1e-6</span>                       <span class="c"># per-band mean and spread</span>
+
+<span class="k">def</span> file_scores(model, vecs, mu, sd, chunk=<span class="n">32</span>):
+    model.eval()
+    out = []
+    <span class="k">with</span> torch.no_grad():
+        <span class="k">for</span> i <span class="k">in</span> range(<span class="n">0</span>, len(vecs), chunk):
+            v = vecs[i:i + chunk]
+            nf, nv, d = v.shape
+            x = torch.from_numpy(((v - mu) / sd).astype(np.float32)).reshape(-<span class="n">1</span>, d)
+            out.extend(((model(x) - x) ** <span class="n">2</span>).mean(<span class="n">1</span>).reshape(nf, nv).mean(<span class="n">1</span>).tolist())
+    <span class="k">return</span> np.array(out)                                        <span class="c"># one score per clip</span>
+
+<span class="k">def</span> tau(s):
+    <span class="k">return</span> float(s.mean() + <span class="n">3</span> * s.std())                         <span class="c"># alert level</span></pre>
+
+<!-- ============================================================ 8 -->
+<h2>8. Evaluation Protocol, Metrics and Results</h2>
+<h3>Protocol (leave-one-machine-out)</h3>
+<ul>
+  <li>For each machine type and noise level, each of the 4 machines is the "new machine" in turn. The model trains on the <b>other 3</b>.</li>
+  <li><b>Test set</b> of the new machine: Hitachi's split, N healthy clips + all N faulty clips (balanced).</li>
+  <li><b>Calibration</b> uses the remaining healthy clips: 30 for the standardisation and the next 30 for the alert level. Calibration and test clips never overlap.</li>
+  <li>4 types × 3 noise levels × 4 machines × 3 seeds = <b>144 runs</b>. Machine 06 was never used to choose a design.</li>
+</ul>
+<span class="file">acoustic\final_evaluation.py: run_case() (core)</span>
+<pre>train_ids = [i <span class="k">for</span> i <span class="k">in</span> F.IDS <span class="k">if</span> i != held]                       <span class="c"># the other 3 machines</span>
+...
+nh, ah = load(held, <span class="s">'normal'</span>), load(held, <span class="s">'abnormal'</span>)
+k = len(ah)
+ev_n, ev_a = M.stack(nh[:k], frames), M.stack(ah, frames)              <span class="c"># test: N healthy + N faulty</span>
+pool = nh[k:]                                                          <span class="c"># healthy clips not in the test set</span>
+mu_h, sd_h = M.stats(M.stack(pool[:K], frames))                        <span class="c"># calibration step 1 (30 clips)</span>
+thr = M.stack(pool[K:<span class="n">2</span> * K], frames)                                    <span class="c"># calibration step 2 (next 30)</span>
+<span class="k">for</span> seed <span class="k">in</span> seeds:
+    model = M.build(X.shape[<span class="n">1</span>], depth, hidden, bott)
+    M.train(model, X, epochs, seed)
+    alert = M.tau(M.file_scores(model, thr, mu_h, sd_h))
+    met = E.full_metrics(M.file_scores(model, ev_n, mu_h, sd_h),
+                         M.file_scores(model, ev_a, mu_h, sd_h), alert)</pre>
+
+<h3>Metric formulas</h3>
+<p>Positive class = <b>faulty</b>. Decision: clip score &gt; alert level → alert.</p>
+<table>
+  <tr><th></th><th>Device says GREEN</th><th>Device says RED</th></tr>
+  <tr><th>Actually healthy</th><td>TN (correct)</td><td>FP (false alarm)</td></tr>
+  <tr><th>Actually faulty</th><td>FN (missed fault)</td><td>TP (fault caught)</td></tr>
+</table>
+<span class="file">acoustic\evaluation_lib.py: full_metrics()</span>
+<pre><span class="k">def</span> full_metrics(sn, sa, alert):
+    y = np.r_[np.zeros(len(sn)), np.ones(len(sa))]
+    s = np.r_[sn, sa]
+    tp = int((sa &gt; alert).sum());  fn = len(sa) - tp
+    fp = int((sn &gt; alert).sum());  tn = len(sn) - fp
+    recall = tp / (tp + fn)
+    spec = tn / (tn + fp)
+    prec = tp / (tp + fp)
+    f1 = <span class="n">2</span> * prec * recall / (prec + recall)
+    <span class="k">return</span> dict(auc=roc_auc_score(y, s), precision=prec, recall=recall, f1=f1,
+                accuracy=(tp + tn) / (tp + tn + fp + fn), fpr=fp / (fp + tn),
+                specificity=spec, balanced_accuracy=(recall + spec) / <span class="n">2</span>, tp=tp, fp=fp, tn=tn, fn=fn)
+
+<span class="k">def</span> precision_at_prevalence(recall, fpr, p):                    <span class="c"># precision if only a share p is faulty</span>
+    <span class="k">return</span> recall * p / (recall * p + fpr * (<span class="n">1</span> - p))</pre>
+<div class="formula">Recall = TP/(TP+FN) · Precision = TP/(TP+FP) · False-alarm rate = FP/(FP+TN) · F1 = 2PR/(P+R) · AUC = P(score<sub>faulty</sub> &gt; score<sub>healthy</sub>)</div>
+
+<h3>Results at 6 dB (recomputed from <code>final_evaluation_results.csv</code> on 27 Nov 2026)</h3>
+<table>
+  <tr><th>Type</th><th class="num">Runs</th><th class="num">AUC</th><th class="num">Recall</th><th class="num">False-alarm rate</th></tr>
+  <tr><td>Fan</td><td class="num">12</td><td class="num">0.92</td><td class="num">0.66</td><td class="num">0.05</td></tr>
+  <tr><td>Pump</td><td class="num">12</td><td class="num">0.96</td><td class="num">0.89</td><td class="num">0.35</td></tr>
+  <tr><td>Slider</td><td class="num">12</td><td class="num">0.94</td><td class="num">0.73</td><td class="num">0.04</td></tr>
+  <tr><td>Valve</td><td class="num">12</td><td class="num">0.56</td><td class="num">0.01</td><td class="num">0.02</td></tr>
+</table>
+<p>The file holds <b>144 runs</b> (4 types, seeds 0, 1, 2) <span class="ok">✓</span>. These values match <code>results\final_summary.md</code> and the PPT.</p>
+<p><b>Row-level check:</b> the first row (fan, machine 00, seed 0) stores TP 93, FP 28, TN 379, FN 314. Recomputing from those counts gives recall 93/407 = <b>0.2285</b> and precision 93/121 = <b>0.7686</b>, the same as the stored values <span class="ok">✓</span>.</p>
+<p><b>Precision when faults are rare:</b> with recall 1.0 and a 5% false-alarm rate, if only 1% of clips are faulty, precision = 0.01 / (0.01 + 0.05 × 0.99) = <b>0.168</b>. This is why lowering false alarms is the next priority.</p>
+
+<!-- ============================================================ 9 -->
+<h2 class="page-break">9. Baseline Reproduction (Pipeline Check)</h2>
+<p>To prove the feature and training pipeline is correct, Hitachi's published baseline was rebuilt (<code>acoustic\baseline_ae.py</code>: 320-64-64-8-64-64-320, Adam, 50 epochs, batch 512) and run on all 48 cases. <code>acoustic\compare_hitachi.py</code> compares the results with Hitachi's published Table 3.</p>
+<span class="file">acoustic\results\baseline_vs_hitachi.md</span>
+<pre>| type   | SNR   | ours (mean of IDs) | Hitachi (same 4 IDs) | diff   |
+| fan    | 6 dB  | 0.929              | 0.913                | +0.016 |
+| fan    | 0 dB  | 0.817              | 0.795                | +0.022 |
+| fan    | -6 dB | 0.679              | 0.662                | +0.017 |
+| pump   | 6 dB  | 0.756              | 0.805                | -0.049 |
+| pump   | 0 dB  | 0.733              | 0.705                | +0.028 |
+| pump   | -6 dB | 0.677              | 0.660                | +0.017 |
+| slider | 6 dB  | 0.891              | 0.877                | +0.014 |
+| slider | 0 dB  | 0.782              | 0.780                | +0.002 |
+| slider | -6 dB | 0.716              | 0.700                | +0.016 |
+| valve  | 6 dB  | 0.707              | 0.670                | +0.037 |
+| valve  | 0 dB  | 0.631              | 0.613                | +0.019 |
+| valve  | -6 dB | 0.574              | 0.555                | +0.019 |
+
+Per-ID cases: 48; mean diff +0.013; mean abs diff 0.028; corr 0.970</pre>
+<p>Recomputed on 27 Nov 2026 from <code>baseline_results.csv</code>: <b>48 cases, correlation 0.970, mean |difference| 0.028</b> <span class="ok">✓</span>. Hitachi's table is typed into <code>compare_hitachi.py</code> by hand, so it can be checked against the MIMII paper (<code>ppts\references\1909.09347v1.pdf</code>).</p>
+
+<!-- ============================================================ 10 -->
+<h2>10. Calibration Ablation</h2>
+<p>From <code>acoustic\results\ablation_calibration.csv</code> (6 dB, chosen models; mean of 8 runs per row). It shows that <b>both</b> calibration steps are needed.</p>
+<table>
+  <tr><th>Type</th><th>Calibration</th><th class="num">AUC</th><th class="num">False alarms</th><th class="num">Faults caught</th></tr>
+  <tr><td rowspan="3">Fan</td><td>None</td><td class="num">0.53</td><td class="num">53%</td><td class="num">46%</td></tr>
+  <tr><td>Alert level only</td><td class="num">0.53</td><td class="num">2%</td><td class="num">14%</td></tr>
+  <tr><td><b>Full (both steps)</b></td><td class="num"><b>0.92</b></td><td class="num">4%</td><td class="num">65%</td></tr>
+  <tr><td rowspan="3">Pump</td><td>None</td><td class="num">0.51</td><td class="num">27%</td><td class="num">15%</td></tr>
+  <tr><td>Alert level only</td><td class="num">0.51</td><td class="num">4%</td><td class="num">26%</td></tr>
+  <tr><td><b>Full (both steps)</b></td><td class="num"><b>0.96</b></td><td class="num">35%</td><td class="num">89%</td></tr>
+  <tr><td rowspan="3">Slider</td><td>None</td><td class="num">0.85</td><td class="num">4%</td><td class="num">31%</td></tr>
+  <tr><td>Alert level only</td><td class="num">0.85</td><td class="num">3%</td><td class="num">39%</td></tr>
+  <tr><td><b>Full (both steps)</b></td><td class="num"><b>0.95</b></td><td class="num">4%</td><td class="num">75%</td></tr>
+</table>
+
+<!-- ============================================================ 11 -->
+<h2 class="page-break">11. Running on the ESP32-S3</h2>
+<p>The trained PyTorch model is converted into C tables by <code>firmware\tools\export_firmware.py</code>. The board runs the same feature extraction, standardisation, autoencoder and calibration in plain C (ESP-IDF). No TensorFlow Lite is used.</p>
+
+<span class="file">firmware\tools\export_firmware.py (core)</span>
+<pre>sd = torch.load(a.model, map_location=<span class="s">'cpu'</span>)                          <span class="c"># fan_id_06_6dB.pt</span>
+Ws = [sd[f<span class="s">'{k}.weight'</span>].numpy() <span class="k">for</span> k <span class="k">in</span> keys]
+Bs = [sd[f<span class="s">'{k}.bias'</span>].numpy() <span class="k">for</span> k <span class="k">in</span> keys]
+hann = <span class="n">0.5</span> - <span class="n">0.5</span> * np.cos(<span class="n">2</span> * np.pi * np.arange(N_FFT) / N_FFT)
+mw = librosa.filters.mel(sr=<span class="n">16000</span>, n_fft=N_FFT, n_mels=mels)          <span class="c"># same mel table as Python</span>
+...                                                                    <span class="c"># written to model_data.c / .h</span></pre>
+
+<span class="file">firmware\common\ae_pipeline.c: ae_logmel()</span>
+<pre><span class="k">void</span> ae_logmel(<span class="k">const</span> int16_t pcm[N_FFT], <span class="k">float</span> out[N_MELS])
+{
+    <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; N_FFT; i++) { s_re[i] = (pcm[i] * (<span class="n">1.0f</span> / <span class="n">32768.0f</span>)) * HANN[i]; s_im[i] = <span class="n">0.0f</span>; }
+    fft1024();                                                         <span class="c"># radix-2 FFT, 1024 points</span>
+    <span class="k">for</span> (<span class="k">int</span> k = <span class="n">0</span>; k &lt; N_BINS; k++) s_re[k] = s_re[k] * s_re[k] + s_im[k] * s_im[k];   <span class="c"># power</span>
+    <span class="k">const float</span> *w = MEL_W;
+    <span class="k">for</span> (<span class="k">int</span> m = <span class="n">0</span>; m &lt; N_MELS; m++) {
+        <span class="k">float</span> acc = <span class="n">0.0f</span>;
+        <span class="k">for</span> (<span class="k">int</span> j = <span class="n">0</span>; j &lt; MEL_COUNT[m]; j++) acc += w[j] * s_re[MEL_FIRST[m] + j];
+        w += MEL_COUNT[m];
+        out[m] = <span class="n">10.0f</span> * log10f(acc + <span class="n">2.220446e-16f</span>);                 <span class="c"># same formula as Python</span>
+    }
+}</pre>
+
+<span class="file">firmware\common\ae_pipeline.c: run_model() and calibration</span>
+<pre><span class="k">static float</span> run_model(<span class="k">const float</span> *x_in)                           <span class="c">/* returns the MSE */</span>
+{
+    ...
+    <span class="k">for</span> (<span class="k">int</span> l = <span class="n">0</span>; l &lt; N_LAYERS; l++) {
+        <span class="k">int</span> ni = LAYER_DIMS[l], no = LAYER_DIMS[l + <span class="n">1</span>];
+        <span class="k">for</span> (<span class="k">int</span> o = <span class="n">0</span>; o &lt; no; o++) {
+            <span class="k">float</span> s = b[o];
+            <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; ni; i++) s += w[i] * in[i];
+            w += ni;
+            out[o] = (l &lt; N_LAYERS - <span class="n">1</span> &amp;&amp; s &lt; <span class="n">0.0f</span>) ? <span class="n">0.0f</span> : s;  <span class="c">/* ReLU */</span>
+        }
+        ...
+    }
+    <span class="k">float</span> e = <span class="n">0.0f</span>;
+    <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; N_MELS; i++) { <span class="k">float</span> d = in[i] - x_in[i]; e += d * d; }
+    <span class="k">return</span> e / N_MELS;
+}
+
+<span class="c">/* calibration step 1: Welford running mean / variance */</span>
+<span class="k">void</span> ae_cal_stats_add(<span class="k">const float</span> lm[N_MELS])
+{
+    s_n_stats++;
+    <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; N_MELS; i++) {
+        <span class="k">float</span> d = lm[i] - s_mu[i];
+        s_mu[i] += d / s_n_stats;
+        s_m2[i] += d * (lm[i] - s_mu[i]);
+    }
+}</pre>
+
+<h3>Board results and checks</h3>
+<table>
+  <tr><th>Check</th><th>Result</th></tr>
+  <tr><td>Weights in <code>model_data.c</code> vs <code>fan_id_06_6dB.pt</code> (re-checked 27 Nov 2026)</td><td>6,656 weights in both; max difference <b>4.8 × 10<sup>−10</sup></b> <span class="ok">✓</span></td></tr>
+  <tr><td>Board score vs Python score, same clip (<code>firmware\results\board_stream_test.csv</code>)</td><td>Healthy clip: board 0.35564, Python 0.35564, both <b>OK</b>. Faulty clip: board 2.61934, Python 2.61935, both <b>FAULT</b>. Max per-frame difference 2.7 × 10<sup>−5</sup> <span class="ok">✓</span></td></tr>
+  <tr><td>Alert level calibrated on the board vs in Python</td><td>0.41965 vs 0.41965 <span class="ok">✓</span></td></tr>
+  <tr><td>Speed on the chip (<code>esp_timer</code>, microseconds)</td><td><b>5.8 ms</b> per 32 ms frame of real sound (about 18% of the time); memory test: features 3,353 µs + model 1,750 µs</td></tr>
+  <tr><td>Memory (ESP-IDF heap report)</td><td>About 385 of 402 KB internal RAM still free</td></tr>
+</table>
+<span class="file">firmware\results\board_stream_test.csv</span>
+<pre>clip,label,board_score,python_score,board_alert,python_alert,board_verdict,python_verdict,max_frame_diff,frames,median_chip_us_per_frame
+own_data\clips\healthy_session2\healthy_session2_002.wav,normal,0.35564077,0.3556412,0.41965152,0.41965091,OK,OK,2.57e-05,311,5797.0
+own_data\clips\faulty\faulty_001.wav,faulty,2.61934389,2.6193452,0.41965152,0.41965091,FAULT,FAULT,2.67e-05,311,5797.0</pre>
+
+<!-- ============================================================ 12 -->
+<h2 class="page-break">12. How Every Result Was Re-Checked</h2>
+<table>
+  <tr><th>#</th><th>What was checked</th><th>How</th><th>Result</th></tr>
+  <tr><td>1</td><td>Dataset is complete</td><td><code>dataset\inventory_mimii.py</code> lists every WAV file</td><td>54,057 files; counts match the MIMII paper <span class="ok">✓</span></td></tr>
+  <tr><td>2</td><td>Features are correct</td><td>One frame recomputed by hand with a NumPy FFT</td><td>Difference 3.8 × 10<sup>−6</sup> <span class="ok">✓</span></td></tr>
+  <tr><td>3</td><td>Feature CSV is genuine</td><td>CSV recomputed from the WAV file</td><td>Difference 0.0005 (CSV rounding) <span class="ok">✓</span></td></tr>
+  <tr><td>4</td><td>Whole pipeline is correct</td><td>Rebuilt Hitachi's baseline, compared with their published table</td><td>Correlation 0.970 over 48 cases <span class="ok">✓</span></td></tr>
+  <tr><td>5</td><td>No test-set tuning</td><td>Machine 06 sealed; designs chosen on 00/02/04 only</td><td>Sealed results reported separately in <code>final_summary.md</code> <span class="ok">✓</span></td></tr>
+  <tr><td>6</td><td>Results aren't luck</td><td>3 seeds per case, 144 runs</td><td>Spread over seeds reported <span class="ok">✓</span></td></tr>
+  <tr><td>7</td><td>Metrics are computed correctly</td><td>One row recomputed from its TP/FP/TN/FN</td><td>Same recall and precision <span class="ok">✓</span></td></tr>
+  <tr><td>8</td><td>Saved model is real</td><td><code>.pt</code> file loaded and its layers counted</td><td>6,856 parameters <span class="ok">✓</span></td></tr>
+  <tr><td>9</td><td>Firmware uses the same model</td><td><code>model_data.c</code> compared with the <code>.pt</code> file</td><td>Difference 4.8 × 10<sup>−10</sup> <span class="ok">✓</span></td></tr>
+  <tr><td>10</td><td>Board computes the same thing as Python</td><td><code>firmware\tools\stream_test.py</code> on real clips</td><td>Same scores and verdicts <span class="ok">✓</span></td></tr>
+</table>
+
+<h3>Commands to repeat the checks on the demo laptop</h3>
+<p>Run from <code>c:\dev\capstone</code> in a normal PowerShell window (not the ESP-IDF one). The MIMII checks need the SSD (<code>N:</code>) connected.</p>
+<pre><span class="c"># 1-3  features (writes the CSV again, then compare)</span>
+python acoustic\export_csv.py --snr 6 --type fan --id id_00 --label normal --index 0
+
+<span class="c"># 4    baseline vs Hitachi (prints the table and correlation 0.970)</span>
+python acoustic\compare_hitachi.py
+
+<span class="c"># 8    load the saved model and count its parameters</span>
+python -c "import torch; sd=torch.load(r'acoustic\demo_models\fan_id_06_6dB.pt'); print({k: tuple(v.shape) for k,v in sd.items()}, sum(v.numel() for v in sd.values()))"
+
+<span class="c"># 10   board vs Python on real clips (board on COM7, dashboard closed)</span>
+python firmware\tools\stream_test.py --normal own_data\clips\healthy_session2\healthy_session2_002.wav
+
+<span class="c"># Demo dashboard</span>
+python acoustic\dashboard_gui.py</pre>
+
+<!-- ============================================================ 13 -->
+<h2>13. Known Limitations (Reported, Not Hidden)</h2>
+<ul>
+  <li><b>Valves are not detected</b> (AUC about 0.5). Their faults are short clicks that get averaged out over a 10 s clip.</li>
+  <li><b>The fixed alert rule</b> (mean + 3·std) is too strict for pumps (35% false alarms) and too lenient for fans and sliders (66% and 73% of faults caught). Median + 3·MAD is being tested as a more robust rule.</li>
+  <li><b>Heavy noise</b> (−6 dB) lowers accuracy, and calibrating at a different noise level than the machine runs at raises false alarms (8% → 44% for fans).</li>
+  <li><b>Own-fan test:</b> one machine, a phone microphone and few clips. It's a first check, not proof.</li>
+  <li><b>On the board,</b> sound currently comes from recorded clips over USB until the INMP441 microphone is connected. Sound–vibration fusion and the energy and noise estimate are still planned.</li>
+</ul>
+
+</body>
+</html>

@@ -31,6 +31,7 @@ static float lm[N_MELS];
 
 void app_main(void)
 {
+    vTaskDelay(pdMS_TO_TICKS(3000)); /* wait so the laptop's serial monitor can reconnect after a reset over USB */
     printf("\nModel: %d parameters (%d KB float32), %d mel bands\n", MODEL_PARAMS, MODEL_PARAMS * 4 / 1024, N_MELS);
     printf("Pipeline static RAM (.bss, counted in 'internal RAM' above): %u bytes\n", (unsigned)ae_static_ram_bytes());
     printf("Flash tables: weights+biases ~%u B, hann+twiddle %u B, mel %u B\n",
